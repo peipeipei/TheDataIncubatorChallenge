@@ -1,0 +1,73 @@
+---
+title: "InstaCart Data"
+author: "Pei Tao"
+date: "7/22/2018"
+output: pdf_document
+---
+
+For this analysis, I used the Instacart Online Grocery Shopping Dataset 2017”, accessed from https://www.instacart.com/datasets/grocery-shopping-2017 on July 17th, 2018. 
+
+```{r}
+aisles <- read.csv("instacart_2017_05_01/aisles.csv")
+departments <- read.csv("instacart_2017_05_01/departments.csv")
+order_products__prior <- read.csv("instacart_2017_05_01/order_products__prior.csv")
+order_products__train <- read.csv("instacart_2017_05_01/order_products__train.csv")
+orders <- read.csv("instacart_2017_05_01/orders.csv")
+products <- read.csv("instacart_2017_05_01/products.csv")
+```
+
+```{r}
+library(ggplot2) 
+library(reshape2)
+```
+
+
+
+```{r}
+ggplot(orders, aes(x = days_since_prior_order)) + 
+  geom_bar() + 
+  labs(x = "Days Since Prior Order",
+       y = "Count",
+       title = "Distribution of Orders by Days Since Prior Order") +
+  geom_bar(fill = c("red", rep("grey25", 6), 
+                    "red", rep("grey25", 6), 
+                    "red", rep("grey25", 6),
+                    "red", rep("grey25", 6),
+                    "red", "grey25", "red"))
+```
+
+```{r}
+ggplot(orders[as.numeric(orders$days_since_prior_order) == 0, ], 
+       aes(x = order_hour_of_day)) +
+  geom_bar() +
+  labs(x = "Hour of Day",
+       y = "",
+       title = "Hour of day when days since prior order = 0")
+```
+
+```{r}
+same_day_order <- which(orders$days_since_prior_order == 0)
+prev_same_day <- same_day_order - 1
+same_day_hours <- orders[same_day_order,]$order_hour_of_day - orders[prev_same_day,]$order_hour_of_day
+
+
+ggplot(data.frame(same_day_hours), aes(x = same_day_hours)) +
+  geom_bar() +
+  labs(x = "Hours Since Last Order",
+       y = "",
+       title = "Hours Since Last Order if Ordered on the Same Day")
+
+```
+
+
+```{r}
+ggplot(orders, aes(x = order_hour_of_day)) + 
+  geom_bar(fill = c(rep("grey25", 10), "red", rep("grey25", 4), "red", rep("grey25", 8))) +
+  labs(x = "Hour of the Day",
+       y = "",
+       title = "Distribution of Orders by Hour of the Day")
+```
+
+
+
+
